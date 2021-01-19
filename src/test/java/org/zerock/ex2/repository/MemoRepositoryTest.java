@@ -3,9 +3,15 @@ package org.zerock.ex2.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.zerock.ex2.entity.Memo;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -74,5 +80,95 @@ class MemoRepositoryTest {
     public void testDelete() {
         Long mno = 100L;
         memoRepository.deleteById(mno);
+    }
+
+    @Test
+    public void testPageDefault() {
+        //1페이지 10개
+
+        Pageable pageable = PageRequest.of(0,10);
+        // return type이 Page 타입이다. 단순히 해당 목록만으로 가져오는데 그치지 않고,
+        // 실제 페이지 처리에 필요한 전체 데이터의 개수를 가져오는 쿼리 역시 같이 처리하기 때문
+        Page<Memo> result = memoRepository.findAll(pageable);
+
+        System.out.println(result);
+
+        System.out.println("--------------------------");
+
+
+        // Page<EntityType>은 다양한 메서드를 제공
+
+        System.out.println("Total Pages : " + result.getTotalPages());
+        System.out.println("Total Count : " + result.getTotalElements());
+        System.out.println("Page Number : " + result.getNumber());
+        System.out.println("Page Size : " + result.getSize());
+        System.out.println("has next page? : " + result.hasNext());
+        System.out.println("first page? : " + result.isFirst());
+
+        // 실제 데이터의 처리를 위해서는 getContent()를 이용해서 List<EntityType>이나 Stream<EntityType>을 반환하는 get()사용
+        System.out.println("-----------");
+
+        for (Memo memo: result.getContent()) {
+            System.out.println(memo);
+        }
+    }
+
+    /*
+    * PageRequest 에는 정렬과 관련된 org.springframework.data.domain.Sort 타입을 파라미터로 전달 가능
+    * Sort는 한 개 혹은 여러개의 필드 값을 이용해 순차적 정렬이나 역순 정렬을 지정
+    * */
+    @Test
+    public void testSort() {
+        //sort option 설정
+        Sort sort1 = Sort.by("mno").descending();
+
+        // 여러개의 조건은 and()를 통해서 여러개의 정렬 조건을 다르게 지정할 수 있다.
+        Sort sort2 = Sort.by("memoText").ascending();
+        Sort sortAll = sort1.and(sort2);
+
+        Pageable pageable = PageRequest.of(0,10);
+
+        Page<Memo> result = memoRepository.findAll(pageable);
+
+        result.get().forEach(memo -> {
+            System.out.println(memo);
+        });
+    }
+
+    /*
+    * Interfacedp findBy.. 저장
+    * Return값을 List 객체로 받아와서 사용
+    * */
+    @Test
+    public void testQueryMethods() {
+        List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(70L, 80L);
+
+        for (Memo memo: list) {
+            System.out.println(memo);
+        }
+    }
+
+    @Test
+    public void testQueryMethodWithPageable() {
+        Pageable pageable = PageRequest.of(0,10, Sort.by("mno").descending());
+
+        Page<Memo> result = memoRepository.findByMnoBetween(10L, 50L, pageable);
+        result.get().forEach(memo -> {
+            System.out.println(memo);
+        });
+    }
+
+
+    /*
+    * @Commit 과 @Transactional을 같이 사용.
+    * select문으로 해당 엔티티 객체들을 가져오는 작업과 각 엔티티를 삭제하는 작업이 같이 이루어지기 때문
+    * Commit은 최종 결과를 커밋하기 위해 사용, 이를 저장하지 않으면 deleteBy는 기본적으로 Rollback이 기본
+    * 현업에서는 잘 사용하지 않는데, 범위로 삭제가 아닌 하나씩 삭제하기 때문
+    * */
+    @Commit
+    @Transactional
+    @Test
+    public void testDeleteQueryMethods() {
+        memoRepository.deleteByMemoByMnoLessThan(10L);
     }
 }
