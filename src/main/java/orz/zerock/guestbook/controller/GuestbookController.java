@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -53,5 +54,17 @@ public class GuestbookController {
         redirectAttributes.addFlashAttribute("msg", gno);
 
         return "redirect:/guestbook/list";
+    }
+
+    /*
+    * GET 파라미터로 gno를 받음
+    * ModelAttribute는 없어도 되지만 명시적으로 사용(?)
+    * Model에 GuestbookDTO 객체를 담아서 전달
+    * */
+    @GetMapping("/read")
+    public void read(long gno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
+        log.info("gno: " + gno);
+        GuestbookDTO dto = service.read(gno);
+        model.addAttribute("dto", dto);
     }
 }
