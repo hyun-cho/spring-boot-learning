@@ -1,10 +1,14 @@
 package orz.zerock.guestbook.service;
 
 import orz.zerock.guestbook.dto.GuestbookDTO;
+import orz.zerock.guestbook.dto.PageRequestDTO;
+import orz.zerock.guestbook.dto.PageResultDTO;
 import orz.zerock.guestbook.entity.Guestbook;
 
 public interface GuestbookService {
     Long register(GuestbookDTO dto);
+
+    PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO requestDTO);
 
     default Guestbook dtoToEntity(GuestbookDTO dto) {
         Guestbook entity = Guestbook.builder()
@@ -14,5 +18,17 @@ public interface GuestbookService {
                 .writer(dto.getWriter())
                 .build();
         return entity;
+    }
+
+    default GuestbookDTO entityToDto(Guestbook entity) {
+        GuestbookDTO dto = GuestbookDTO.builder()
+                .gno(entity.getGno())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .writer(entity.getWriter())
+                .regDate(entity.getRegDate())
+                .modDate(entity.getModDate())
+                .build();
+        return dto;
     }
 }
