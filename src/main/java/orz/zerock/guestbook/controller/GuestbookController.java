@@ -5,7 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import orz.zerock.guestbook.dto.GuestbookDTO;
 import orz.zerock.guestbook.dto.PageRequestDTO;
 import orz.zerock.guestbook.service.GuestbookService;
 
@@ -32,5 +35,23 @@ public class GuestbookController {
 
         model.addAttribute("result", service.getList(pageRequestDTO));
 
+    }
+
+    @GetMapping("/register")
+    public void register() {
+        log.info("register get...");
+    }
+
+    @PostMapping("/register")
+    public String registerPost(GuestbookDTO dto, RedirectAttributes redirectAttributes) {
+        log.info("dto. ... " + dto);
+
+        // 새로 추가된 엔티티의 no
+        Long gno = service.register(dto);
+
+        // modal을 띄우기 위한 용도로 사용
+        redirectAttributes.addFlashAttribute("msg", gno);
+
+        return "redirect:/guestbook/list";
     }
 }
