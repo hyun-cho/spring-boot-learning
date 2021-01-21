@@ -27,4 +27,13 @@ public class UploadResultDTO {
         return "";
     }
 
+    public String getThumbnailURL() {
+        try {
+            return URLEncoder.encode(folderPath + "/s_" + uuid + "_" + fileName, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }
