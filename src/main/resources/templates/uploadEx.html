@@ -24,6 +24,24 @@
                 console.log(files[i]);
                 formData.append("uploadFiles", files[i]);
             }
+
+            //실제 업로드 부분
+            //upload ajax
+            $.ajax({
+                url: '/uploadAjax',
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: 'POST',
+                dataType: 'json',
+                success: () => {
+                    console.log(result);
+                    // TODO
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.log(textStatus);
+                }
+            });
         });
     </script>
 </body>
