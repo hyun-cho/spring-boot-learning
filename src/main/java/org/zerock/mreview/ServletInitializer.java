@@ -1,4 +1,4 @@
-package org.zerock.ex2;
+package org.zerock.mreview.ex2;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
