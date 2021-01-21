@@ -21,6 +21,9 @@ public interface MovieService {
     //목록 처리
     PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO);
 
+    //영화 하나 정보
+    MovieDTO getMovie(Long mno);
+
     /*
     * Movie Entity
     * List<MovieImage> Entity - 리스트로 받은 이유는 조회 화면에서 여러 개의 MovieImage를 처리하기 위해서
