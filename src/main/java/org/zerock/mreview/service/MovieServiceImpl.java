@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.mreview.dto.MovieDTO;
 import org.zerock.mreview.dto.PageRequestDTO;
 import org.zerock.mreview.dto.PageResultDTO;
@@ -15,7 +16,6 @@ import org.zerock.mreview.entity.MovieImage;
 import org.zerock.mreview.repository.MovieImageRepository;
 import org.zerock.mreview.repository.MovieRepository;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
