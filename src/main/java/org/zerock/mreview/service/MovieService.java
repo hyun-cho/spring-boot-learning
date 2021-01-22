@@ -39,6 +39,7 @@ public interface MovieService {
                 .build();
 
         List<MovieImageDTO> movieImageDTOList = movieImages.stream().map(movieImage -> {
+            if(movieImage == null) return new MovieImageDTO();
             return MovieImageDTO.builder()
                     .imgName(movieImage.getImgName())
                     .path(movieImage.getPath())
@@ -58,10 +59,17 @@ public interface MovieService {
         Map<String, Object> entityMap = new HashMap<>();
 
         // 질문 할 부분
-        Movie movie = Movie.builder()
-//                .mno(movieDTO.getMno())
-                .title(movieDTO.getTitle())
-                .build();
+        Movie movie;
+        if (movieDTO.getMno() == null) {
+            movie = Movie.builder()
+                    .title(movieDTO.getTitle())
+                    .build();
+        } else {
+            movie = Movie.builder()
+                    .mno(movieDTO.getMno())
+                    .title(movieDTO.getTitle())
+                    .build();
+        }
 
         entityMap.put("movie", movie);
 

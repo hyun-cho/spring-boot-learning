@@ -37,10 +37,15 @@ public class MovieServiceImpl implements MovieService{
     public Long register(MovieDTO movieDTO) {
         Map<String, Object> entityMap = dtoToEntity(movieDTO);
         Movie movie = (Movie) entityMap.get("movie");
-        List<MovieImage> movieImageList = (List<MovieImage>) entityMap.get("imgList");
+        List<MovieImage> movieImageList = new ArrayList<>();
+        if(entityMap.containsKey("imgList"))
+            movieImageList = (List<MovieImage>) entityMap.get("imgList");
+
+        System.out.println(Arrays.toString(movieImageList.toArray()));
 
         movieRepository.save(movie);
-        movieImageList.forEach(movieImage -> movieImageRepository.save(movieImage));
+        if(entityMap.containsKey("imgList"))
+            movieImageList.forEach(movieImage -> movieImageRepository.save(movieImage));
 
         return movie.getMno();
     }
